@@ -1,0 +1,7 @@
+@mixin breakpoint($value) {
+    @if $value == 'desktop' {
+        @media only screen and (min-width: 1036px) {
+            @content;
+        }
+    }
+}

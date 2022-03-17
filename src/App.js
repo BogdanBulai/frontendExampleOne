@@ -1,23 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-function App() {
+import Card from './components/Card';
+
+const url = 'https://people.canonical.com/~anthonydillon/wp-json/wp/v2/posts.json';
+
+const App = () => {
+  const [data, setData] = useState([]);
+  const [error, setError] = useState(false);
+
+  const fetchData = async () => {
+    axios.get(url).then(function (response) {
+      setData(response.data);
+    })
+    .catch(function (error) {
+      setError(true);
+    })
+  }
+
+  useEffect(() => {
+    fetchData();
+  },[]);
+
+  if (error) {
+    return 'An error has occured!';
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="main-container">
+      <div className="row">
+        {
+          data.length === 0 ? 'Loading...' : data.map(cardData => {
+            return <Card key={cardData.id} cardData={cardData} />;
+          })
+        }
+      </div>
     </div>
   );
 }
